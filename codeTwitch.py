@@ -1,5 +1,6 @@
 import time
 import re
+import platform
 from selenium import webdriver
 from bs4 import BeautifulSoup as bs
 from selenium.webdriver.common.keys import Keys
@@ -9,14 +10,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 
-linux = True
 
-if linux == True:
+sistema = platform.system()
+
+if sistema == 'Windows':
+    driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
+else:
     chromeOptions = Options()
     driver = webdriver.Chrome(executable_path="./chromedriver",
     options=chromeOptions)
-else:
-    driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
+    
     
 import funciones
 import apiTwitch
@@ -53,11 +56,12 @@ while True:
         chromeOptions = Options()
         chromeOptions.headless = True
         
-        if linux == True:
+        if sistema == 'Windows':
+            driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
+        else:
+            chromeOptions = Options()
             driver = webdriver.Chrome(executable_path="./chromedriver",
             options=chromeOptions)
-        else:
-            driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
         
         print('yendo api twitch')
         inactivos = apiTwitch.api()
