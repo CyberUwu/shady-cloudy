@@ -1,5 +1,6 @@
 import time
 import re
+import platform
 from selenium import webdriver
 from bs4 import BeautifulSoup as bs
 from selenium.webdriver.common.keys import Keys
@@ -11,14 +12,15 @@ from selenium import webdriver
 chromeOptions = Options()
 chromeOptions.headless = True
 
-linux = True
+sistema = platform.system()
 
-if linux == True:
-    driver = webdriver.Chrome(executable_path="./chromedriver",
-options=chromeOptions)
-else:
+if sistema == 'Windows':
     driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
-import creacionBot
+else:
+    chromeOptions = Options()
+    driver = webdriver.Chrome(executable_path="./chromedriver",
+    options=chromeOptions)
+    
 entro = False
 codesGuardados=list()
 codigoViejo = ''
@@ -36,6 +38,7 @@ while True:
     mensajes = soup.findAll(class_="css-901oao css-16my406 r-1qd0xha r-ad9z0x r-bcqeeo r-qvutc0")
     #print(mensajes)
     #    print(1)
+    print('Esta funcionando pa!!')
     for i in mensajes:
         codeNuevo = i.text
         mensajeNuevo = i.text
