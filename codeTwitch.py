@@ -11,12 +11,15 @@ from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 
 
+
+
 sistema = platform.system()
 
 if sistema == 'Windows':
     driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
 else:
     chromeOptions = Options()
+    chromeOptions.headless = True
     driver = webdriver.Chrome(executable_path="./chromedriver",
     options=chromeOptions)
     
@@ -32,6 +35,7 @@ diccionarioStreamer = apiTwitch.diccionarioStreamer
 
 cantidadCanales = len(diccionarioStreamer)
 inactivos = list()
+streamersActivos = list()
 
 mensajeViejo = ''
 
@@ -46,62 +50,68 @@ delay = time.time() + 60*15
 contador = 0
 glosario=list()
 codigoEnviado=''
+
 while True:
-    if time.time() >=delay or contador == 0:
-        if contador != 0: 
-            driver.quit()
-        contador+=1
-        delay = time.time() + 60 * 15
-        #interacion = 0
-        chromeOptions = Options()
-        chromeOptions.headless = True
-        
-        if sistema == 'Windows':
-            driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
-        else:
-            chromeOptions = Options()
-            driver = webdriver.Chrome(executable_path="./chromedriver",
-            options=chromeOptions)
-        
-        print('yendo api twitch')
-        inactivos = apiTwitch.api()
-        print(inactivos)
-        print(inactivos.count('activo'))
+    try:
+        if time.time() >=delay or contador == 0:
+            streamersActivos.clear()
+            if contador != 0: 
+                driver.quit()
+            contador+=1
+            delay = time.time() + 60 * 15
+            #interacion = 0
+            
+            if sistema == 'Windows':
+                driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
+            else:
+                chromeOptions = Options()
+                chromeOptions.headless = True
+                driver = webdriver.Chrome(executable_path="./chromedriver",
+                options=chromeOptions)
+            
+            print('yendo api twitch')
+            inactivos = apiTwitch.api()
+            print(inactivos)
+            print(inactivos.count('activo'))
 
-        for i in range(len(inactivos)):
-            if inactivos[i] == 'activo':
-                print(diccionarioStreamer[i][0])
+            for i in range(len(inactivos)):
+                if inactivos[i] == 'activo':
+                    print(diccionarioStreamer[i][0])
+                    streamersActivos.append(diccionarioStreamer[i][0])
 
-        for i in range(cantidadCanales):
-            if (inactivos[i] == 'inactivo'): continue
-            driver.execute_script(f"window.open('about:blank','{diccionarioStreamer[i][0]}');")
-            driver.switch_to.window(diccionarioStreamer[i][0])
-            driver.get(linkBase + str(diccionarioStreamer[i][0]) + linkExtra)
-    else:
-        for i in range(cantidadCanales):
-            if(inactivos[i] == 'inactivo'): continue
-            try:
+            for i in range(cantidadCanales):
+                if (inactivos[i] == 'inactivo'): continue
+                driver.execute_script(f"window.open('about:blank','{diccionarioStreamer[i][0]}');")
                 driver.switch_to.window(diccionarioStreamer[i][0])
-                html = driver.page_source
-                soup = bs(html, "html.parser")
-                mensajes = soup.findAll(class_='text-fragment')
-                texto = mensajes[-1].text
-                #print(texto)
-            except:
-                #print(1000000000000)
-                continue
-            if (mensajeViejo == mensajes): continue
-            mensajeViejo = mensajes
-            #streamer = getattr(funciones, funcionesCodes[i])  # get attributte
-            codesNuevos = funciones.recibirCode(texto, diccionarioStreamer[i][1],codesViejos[i])
-            if codesNuevos is glosario:continue
-            glosario.append(codesNuevos)
-            print(glosario)
-            if type(codesNuevos) == int: continue
-            print('hay code muchachos!')
-            try:
-                if codigoEnviado==codesNuevos: continue
-                codigoEnviado=codesNuevos
-                creacionBot.mandarMensaje(codesNuevos,'CyberBot')
-            except:
-                print(1)
+                driver.get(linkBase + str(diccionarioStreamer[i][0]) + linkExtra)
+        else:
+            for i in range(cantidadCanales):
+                if(inactivos[i] == 'inactivo'): continue
+                try:
+                    driver.switch_to.window(diccionarioStreamer[i][0])
+                    html = driver.page_source
+                    soup = bs(html, "html.parser")
+                    mensajes = soup.findAll(class_='text-fragment')
+                    texto = mensajes[-1].text
+                    #print(texto)
+                except:
+                    #print(1000000000000)
+                    continue
+                if (mensajeViejo == mensajes): continue
+                mensajeViejo = mensajes
+                #streamer = getattr(funciones, funcionesCodes[i])  # get attributte
+                codesNuevos = funciones.recibirCode(texto, diccionarioStreamer[i][1],codesViejos[i])
+                if codesNuevos is glosario:continue
+                
+                #glosario.append(codesNuevos)
+                #print(glosario)
+                if type(codesNuevos) == int: continue
+                print('hay code muchachos!')
+                try:
+                    if codigoEnviado==codesNuevos: continue
+                    codigoEnviado=codesNuevos
+                    creacionBot.mandarMensaje(codesNuevos,'CyberBot')
+                except:
+                    print(1)
+    except:
+        continue

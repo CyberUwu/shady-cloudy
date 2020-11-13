@@ -9,8 +9,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
-chromeOptions = Options()
-chromeOptions.headless = True
+
+import creacionBot
 
 sistema = platform.system()
 
@@ -18,6 +18,7 @@ if sistema == 'Windows':
     driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
 else:
     chromeOptions = Options()
+    chromeOptions.headless = True
     driver = webdriver.Chrome(executable_path="./chromedriver",
     options=chromeOptions)
     
