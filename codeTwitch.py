@@ -13,12 +13,12 @@ from selenium import webdriver
 
 sistema = platform.system()
 
-if sistema == 'Windows':
-    driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
-else:
+if sistema == 'Linux':
     chromeOptions = Options()
     driver = webdriver.Chrome(executable_path="./chromedriver",
     options=chromeOptions)
+else:
+    driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
     
     
 import funciones
@@ -58,12 +58,12 @@ while True:
         chromeOptions = Options()
         chromeOptions.headless = True
         
-        if sistema == 'Windows':
-            driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
-        else:
+        if sistema == 'Linux':
             chromeOptions = Options()
             driver = webdriver.Chrome(executable_path="./chromedriver",
             options=chromeOptions)
+        else:
+            driver = webdriver.Chrome(executable_path=r"chromedriver.exe")
         
         print('yendo api twitch')
         inactivos = apiTwitch.api()
