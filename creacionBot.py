@@ -1,5 +1,5 @@
 import requests
-modoPrueba = False
+modoPrueba = True
 if modoPrueba == True:
     URL_WEBHOOK = 'https://discordapp.com/api/webhooks/773555505859395585/XvgMUeEC-XRxIJ7y6Zp1QuVmqYKuJ18G99GAcc0POkFwozUDjqC670jCUspEI5rg1X0W'
 else:

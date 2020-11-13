@@ -32,6 +32,7 @@ diccionarioStreamer = apiTwitch.diccionarioStreamer
 
 cantidadCanales = len(diccionarioStreamer)
 inactivos = list()
+streamersActivos = list()
 
 mensajeViejo = ''
 
@@ -48,6 +49,7 @@ glosario=list()
 codigoEnviado=''
 while True:
     if time.time() >=delay or contador == 0:
+        streamersActivos.clear()
         if contador != 0: 
             driver.quit()
         contador+=1
@@ -71,7 +73,8 @@ while True:
         for i in range(len(inactivos)):
             if inactivos[i] == 'activo':
                 print(diccionarioStreamer[i][0])
-
+                streamersActivos.append(diccionarioStreamer[i][0])
+                
         for i in range(cantidadCanales):
             if (inactivos[i] == 'inactivo'): continue
             driver.execute_script(f"window.open('about:blank','{diccionarioStreamer[i][0]}');")
@@ -95,8 +98,9 @@ while True:
             #streamer = getattr(funciones, funcionesCodes[i])  # get attributte
             codesNuevos = funciones.recibirCode(texto, diccionarioStreamer[i][1],codesViejos[i])
             if codesNuevos is glosario:continue
-            glosario.append(codesNuevos)
-            print(glosario)
+            # glosario.append(codesNuevos)
+            # print(glosario)
+            print(streamersActivos)
             if type(codesNuevos) == int: continue
             print('hay code muchachos!')
             try:

@@ -5,6 +5,7 @@ mensaje = 'promo code is:agusbob896^20x'
 prefijo = 'agusbob'
 codeViejo = 'COMEME LAS 2 CONCHAS'
 
+import re
 def recibirCode(mensaje,prefijo, codeViejo):
     textoEnviar = ''
     if re.search(rf'.*({prefijo}[0-9][0-9]+)',mensaje):
@@ -20,11 +21,11 @@ def recibirCode(mensaje,prefijo, codeViejo):
                     if z == len(array): 
                         textoEnviar += array[z]
                     textoEnviar += ', ' + array[z]
+                    textoEnviar = '```' + textoEnviar + '```'
         else:
             array = re.findall(rf'({prefijo}[0-9][0-9]+.*)', mensaje)
-            print(array)
-            textoEnviar = array[0]
-        # else:
+            textoEnviar = '```' + array[0] + '```'
+            print(textoEnviar)
         #     try:    
         #         code = re.findall(rf'.*({prefijo}[0-9]+[a-z][0-9]+)',mensaje)
         #         textoEnviar = code[0]
